@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LLM Security Fundamentals: Study Handbook</title>
+<meta name="author" content="Jun'dabi (Abdul) Kazembe">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#1E4499; --red:#C8102E; --ink:#13171C; --body:#3D4652; --grey:#6B7480; --rule:#E2E7F2;
+  --tint:#F1F5FC; --tint2:#F7F9FD; --pink:#FDF0F2;
+  --input:#1E4499; --data:#1F7A5A; --access:#C8102E; --output:#A66A00;
+  --sans:'Source Sans 3','Source Sans Pro','Segoe UI','Calibri','Carlito','Helvetica Neue',Arial,sans-serif;
+  --serif:'Source Serif 4','Georgia','Cambria','Caladea','Times New Roman',serif;
+}
+@page{size:960pt 540pt;margin:0}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:#DDE2EA;font-family:var(--sans);color:var(--body);font-size:8.8pt;line-height:1.42}
+.page{width:960pt;height:540pt;margin:14pt auto;background:#fff;position:relative;overflow:hidden;
+  padding:30pt 48pt 0;box-shadow:0 2px 14px rgba(0,0,0,.2);page-break-after:always;break-after:page}
+@media print{body{background:#fff}.page{margin:0;box-shadow:none}}
+.sectag{display:flex;align-items:center;gap:6pt;font-size:8pt;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--red)}
+.sectag:before{content:"";width:7pt;height:7pt;background:var(--red);display:inline-block}
+h1.t{font-size:25pt;line-height:1.1;font-weight:700;color:var(--blue);margin:7pt 0 5pt;letter-spacing:-.005em}
+.lede{font-size:11pt;color:var(--body);margin:0;padding-bottom:7pt;border-bottom:2pt solid var(--blue);max-width:none}
+.body{margin-top:13pt;zoom:1.18}
+.foot{position:absolute;left:48pt;right:48pt;bottom:17pt;border-top:.75pt solid var(--blue);padding-top:5pt;display:flex;
+  justify-content:space-between;font-size:7.6pt;letter-spacing:.04em;color:var(--grey)}
+.foot b{color:var(--ink);font-weight:600}
+.lab{font-size:6.8pt;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin:0 0 6pt}
+.lab.r{color:var(--red)}
+.c2{display:grid;grid-template-columns:1fr 1fr;gap:26pt}
+.c3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24pt}
+.c4{display:grid;grid-template-columns:repeat(4,1fr);gap:18pt}
+.c12{display:grid;grid-template-columns:1fr 1.45fr;gap:26pt}
+.c21{display:grid;grid-template-columns:1.45fr 1fr;gap:26pt}
+p{margin:0 0 5pt}
+h3{font-size:9.6pt;font-weight:700;color:var(--ink);margin:0 0 3pt}
+b,strong{color:var(--ink);font-weight:700}
+ul,ol{margin:0 0 6pt;padding:0;list-style:none}
+ul.sq li{position:relative;padding-left:10pt;margin-bottom:4.5pt}
+ul.sq li:before{content:"";position:absolute;left:0;top:4.2pt;width:4pt;height:4pt;background:var(--blue)}
+ol.num{counter-reset:n}
+ol.num li{counter-increment:n;position:relative;padding-left:15pt;margin-bottom:5pt}
+ol.num li:before{content:counter(n) ".";position:absolute;left:0;font-weight:700;color:var(--blue)}
+ul.chk li{position:relative;padding-left:11pt;margin-bottom:3.5pt}
+ul.chk li:before{content:"";position:absolute;left:0;top:2.8pt;width:5pt;height:5pt;border:.9pt solid var(--blue)}
+table{border-collapse:collapse;width:100%;font-size:8.2pt;margin:0 0 6pt}
+th{background:var(--blue);color:#fff;text-align:left;font-size:6.6pt;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:5pt 6pt;line-height:1.25}
+td{padding:4.6pt 6pt;vertical-align:top;border-bottom:.75pt solid var(--rule);line-height:1.36}
+tbody tr:nth-child(even) td, tr:nth-child(even) td{background:var(--tint2)}
+th+th{}
+td.k{font-weight:700;color:var(--blue);white-space:nowrap}
+.plain td{background:none!important;border-bottom:.75pt solid var(--rule)}
+.panel{background:var(--tint);border-left:2.5pt solid var(--blue);padding:7pt 9pt;margin:0 0 7pt}
+.panel .lab{margin-bottom:3pt;color:var(--grey);font-size:6.4pt}
+.panel p:last-child{margin-bottom:0}
+.panel.red{background:var(--pink);border-left-color:var(--red)}
+.panel.red .lab{color:var(--red)}
+.stats{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;border-top:2pt solid var(--blue);margin:0 0 9pt}
+.stats div{padding:5pt 8pt 4pt 0}
+.stats b{display:block;font-family:var(--serif);font-weight:400;font-size:17pt;line-height:1.15;color:var(--blue)}
+.stats span{font-size:6.4pt;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--grey)}
+.cap{font-size:6.4pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--grey)}
+.lane{font-weight:700;font-size:7pt;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.lane.input{color:var(--input)}.lane.data{color:var(--data)}.lane.access{color:var(--access)}.lane.output{color:var(--output)}
+.flow{display:flex;margin:3pt 0 8pt}
+.flow div{flex:1;border:.75pt solid var(--blue);padding:4pt 3pt;text-align:center;font-size:7.6pt;background:#fff;position:relative;margin-right:9pt;color:var(--ink)}
+.flow div:last-child{margin-right:0}
+.flow div:not(:last-child):after{content:"";position:absolute;right:-7pt;top:50%;margin-top:-3pt;border-left:5pt solid var(--red);border-top:3pt solid transparent;border-bottom:3pt solid transparent}
+.flow div.bad{background:var(--pink);border-color:var(--red);color:var(--red);font-weight:700}
+.small{font-size:7.6pt;color:var(--grey)}
+.mono{font-family:Consolas,'DejaVu Sans Mono',monospace;font-size:7.6pt;background:var(--tint);padding:0 2pt}
+.toc td{padding:3.6pt 6pt}
+.toc td.n{font-weight:700;color:var(--blue);width:22pt}
+.toc td.pg{text-align:right;color:var(--grey);width:52pt}
+.person{border-top:2pt solid var(--blue);padding-top:7pt}
+.person .nm{font-size:13pt;font-weight:700;color:var(--blue);margin:1pt 0 4pt}
+.person p{font-size:8.4pt}
+/* cover */
+.cover{padding:0}
+.cover .b1{position:absolute;left:0;top:0;width:14pt;height:62%;background:var(--blue)}
+.cover .b2{position:absolute;left:0;bottom:0;width:14pt;height:38%;background:var(--red)}
+.cover .k{position:absolute;left:62pt;top:40pt}
+.cover .k b{display:block;font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--blue)}
+.cover .k span{font-size:7.6pt;letter-spacing:.2em;text-transform:uppercase;color:var(--grey)}
+.cover h1{position:absolute;left:62pt;top:150pt;margin:0;font-size:44pt;line-height:1.08;color:var(--blue);font-weight:700}
+.cover .lbl{position:absolute;left:62pt;top:268pt;font-size:10.5pt;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--red)}
+.cover .sub{position:absolute;left:62pt;top:288pt;width:430pt;font-size:11pt;color:var(--body)}
+.cover .cs{position:absolute;right:62pt;top:150pt;width:190pt}
+.cover .cs div{border-top:2pt solid var(--blue);padding:5pt 0 9pt}
+.cover .cs b{display:block;font-family:var(--serif);font-weight:400;font-size:26pt;color:var(--blue);line-height:1.1}
+.cover .cs span{font-size:6.8pt;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--grey)}
+.cover .meta{position:absolute;left:62pt;right:62pt;bottom:62pt;border-top:2pt solid var(--blue);padding-top:9pt;display:grid;grid-template-columns:1.3fr 1.5fr 1.2fr .8fr;gap:18pt}
+.cover .meta .l{font-size:6.4pt;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--grey);margin-bottom:5pt}
+.cover .meta .v{font-size:9.6pt;color:var(--ink);line-height:1.25}
+.cover .meta .s{font-size:7.8pt;color:var(--grey);margin-bottom:5pt}
+.cover .src{position:absolute;left:62pt;right:62pt;bottom:30pt;font-size:7.6pt;color:var(--grey)}
+.cover .src b{font-size:6.4pt;letter-spacing:.2em;text-transform:uppercase;color:var(--grey);margin-right:7pt}
+
+.grp{display:grid;grid-template-columns:1fr 1fr;gap:9pt;margin-bottom:3pt}
+.grp span{display:block;font-size:6.4pt;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);border-bottom:2pt solid var(--blue);padding-bottom:3pt}
+.grp .g2l span{color:var(--red);border-bottom-color:var(--red)}
+.nodes{display:grid;grid-template-columns:repeat(8,1fr);gap:9pt;margin:0 0 9pt}
+.nd{border:.75pt solid var(--blue);padding:4pt 2pt;text-align:center;position:relative;background:#fff}
+.nd b{display:block;font-family:var(--serif);font-weight:400;font-size:13pt;color:var(--blue);line-height:1.1}
+.nd span{font-size:6.8pt;letter-spacing:.06em;text-transform:uppercase;color:var(--grey);font-weight:600}
+.nd.g2{border-color:var(--red)}.nd.g2 b{color:var(--red)}
+.nd:not(:last-child):after{content:"";position:absolute;right:-7.5pt;top:50%;margin-top:-3pt;border-left:5pt solid var(--grey);border-top:3pt solid transparent;border-bottom:3pt solid transparent}
+.pt td{padding:3.4pt 6pt}
+.pt tr.sep td{border-bottom:1.5pt solid var(--blue)}
+.fw td{padding:6pt 6pt}
+</style></head><body>
+<section class="page cover"><div class="b1"></div><div class="b2"></div>
+<div class="k"><b>AI Security University (AISEC)</b><span>Course summary and study handbook</span></div>
+<h1>LLM Security<br>Fundamentals</h1>
+<div class="lbl">Study handbook &middot; Reading edition</div>
+<div class="sub">From the 8-step pipeline to the OWASP LLM Top 10 (2026) and the audit toolkit. &ldquo;Before you hack it, you have to understand it.&rdquo;</div>
+<div class="cs"><div><b>8</b><span>Pipeline steps</span></div><div><b>10</b><span>Named risks</span></div><div><b>1</b><span>Mental model</span></div></div>
+<div class="meta">
+<div><div class="l">Prepared by</div><div class="v">Jun&rsquo;dabi (Abdul) Kazembe</div><div class="s">Information System Auditor</div></div>
+<div><div class="l">Course instructors</div><div class="v">Vinaya Vasudevan</div><div class="s">AI Security Research Fellow, Heron AI Security Fellowship</div><div class="v">Dan Barahona</div><div class="s">Founder, AI Security University</div></div>
+<div><div class="l">Institution</div><div class="v">AI Security University (AISEC)</div><div class="s">Summary of material taught</div></div>
+<div><div class="l">Edition</div><div class="v">October 2026</div></div></div>
+<div class="src"><b>Companion material</b>Prepared as a reading handout to accompany the slide presentation LLM Security Fundamentals Summary.</div></section><section class="page"><div class="sectag">Introduction</div><h1 class="t">Scope of this handbook</h1><p class="lede">The slide deck is designed to be presented. This handbook is designed to be read, so that a reader can take it away and study the subject to an expert level without the presenter.</p>
+<div class="body">
+<div class="c12"><div>
+<div class="lab">Purpose</div>
+<ul class="sq"><li>Give a self-contained account of LLM security that can be studied without the slides.</li>
+<li>Locate every OWASP LLM risk on the pipeline a request actually follows.</li>
+<li>Equip the reader to review any AI feature using a repeatable method.</li></ul>
+<div class="lab" style="margin-top:8pt">Learning outcomes</div>
+<ol class="num" style="font-size:8.4pt"><li>Explain why LLM security differs from classical application security.</li>
+<li>Describe the five application layers and the eight pipeline steps.</li>
+<li>Name and place each of the ten OWASP LLM risks (2026).</li>
+<li>Choose layered defences, and say which risks can only be contained.</li>
+<li>Translate controls into ATLAS, EU AI Act, ISO 42001 and NIST vocabulary.</li>
+<li>Run a five-question review of any AI feature.</li></ol>
+<div class="panel" style="margin-top:6pt"><div class="lab">Terminology</div><p>Throughout this handbook, <b>the course</b> means the AI Security University programme taught by Vinaya Vasudevan and Dan Barahona. <b>The deck</b> is the accompanying slide presentation. Risk identifiers LLM01 to LLM10 refer to the OWASP LLM Top 10, 2026 edition.</p></div>
+</div><div>
+<div class="lab">Contents</div>
+<table class="toc"><tbody>
+<tr><td class="n">&nbsp;</td><td>Acknowledgements and attribution</td><td class="pg">3</td></tr>
+<tr><td class="n">I</td><td>Executive summary</td><td class="pg">4</td></tr>
+<tr><td class="n">II</td><td>Foundations: how an LLM application works</td><td class="pg">5 to 7</td></tr>
+<tr><td class="n">III</td><td>The 8-step pipeline and four attacks you cannot see</td><td class="pg">8 to 9</td></tr>
+<tr><td class="n">IV</td><td>OWASP LLM Top 10 (2026): overview, ten risk profiles, attack story</td><td class="pg">10 to 21</td></tr>
+<tr><td class="n">V</td><td>Frameworks and compliance: ATLAS, EU AI Act, ISO 42001, NIST</td><td class="pg">22 to 23</td></tr>
+<tr><td class="n">VI</td><td>The audit toolkit, key takeaways and self-check</td><td class="pg">24 to 25</td></tr></tbody></table>
+<p class="small" style="margin-top:8pt">How to read it: take Sections I to III in order the first time. Afterwards, use Section IV (one page per risk) and Section VI (the audit toolkit) as working references. Each risk page follows the same structure: overview, how the attack works, a real example, defensive controls, audit questions and framework mapping.</p>
+</div></div></div>
+<div class="foot"><span>LLM Security Fundamentals, Study Handbook, October 2026</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 2</span></div></section><section class="page"><div class="sectag">Acknowledgements</div><h1 class="t">Source of this material</h1><p class="lede">This handbook is a summary of what was taught at AI Security University (AISEC) under the instruction of Vinaya Vasudevan and Dan Barahona.</p>
+<div class="body">
+<div class="c3">
+<div class="person"><div class="cap">Course instructor</div><div class="nm">Vinaya Vasudevan</div>
+<p>AI Security Research Fellow at the Heron AI Security Fellowship. Creator of the SAILORS Framework. Specialist in Agentic AI and MCP Security, Threat Modeling, AppSec, DFIR and Secure AI Architecture. CAISP certified.</p></div>
+<div class="person"><div class="cap">Founder, AI Security University</div><div class="nm">Dan Barahona</div>
+<p>Founder of AI Security University, the institution under which this course is delivered.</p><p class="small">Profile: linkedin.com/in/rdbarahona</p></div>
+<div class="person" style="border-top-color:var(--red)"><div class="cap" style="color:var(--red)">Prepared by</div><div class="nm">Jun&rsquo;dabi (Abdul) Kazembe</div>
+<p>Information System Auditor &middot; Software Craftsman &middot; Generative AI Practitioner &middot; System Administrator &middot; Business and Data Analyst &middot; Blockchain Evangelist.</p></div></div>
+<div class="c2" style="margin-top:14pt"><div>
+<div class="lab">Attribution</div>
+<p>The structure, frameworks, examples and teaching approach reproduced here originate with the course. The preparer&rsquo;s role has been to organise and condense the material, and to expand it into a self-contained reading document that complements the slide presentation.</p>
+<p class="small">Cite as: Kazembe, J. (2026). <i>LLM Security Fundamentals: Study Handbook</i>. Summary of course material by V. Vasudevan and D. Barahona, AI Security University.</p></div>
+<div class="panel red"><div class="lab">Please note</div><p>This is an independent study summary and is not an official publication of AI Security University or its instructors. Any errors, omissions or editorial additions, including the &ldquo;practitioner notes&rdquo; and audit questions added for completeness, are the preparer&rsquo;s own. Regulatory dates and framework details change; verify them against primary sources. Nothing here is legal advice.</p></div></div></div>
+<div class="foot"><span>Acknowledgements and attribution</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 3</span></div></section><section class="page"><div class="sectag">Section I</div><h1 class="t">Executive summary</h1><p class="lede">Six matters to carry away from the course. Each is drawn from a position taught in the sessions.</p>
+<div class="body">
+<div class="c2"><div><ol class="num">
+<li><b>Rules are now just text.</b> An LLM is a next-token predictor. Rules written in a prompt are not enforced by code; they are suggestions weighed against every other piece of text in the stream.</li>
+<li><b>An LLM application has five layers.</b> Application, system prompt, retrieval, tools and model. Half of the OWASP Top 10 is not about the model at all.</li>
+<li><b>Every request follows eight steps.</b> Step 5, context assembly, is where your application decides what the model sees, and it is where prompt injection lives.</li></ol></div>
+<div><ol class="num" style="counter-reset:n 3">
+<li><b>Ten risks, four lanes.</b> The 2026 OWASP list moved Excessive Agency from 6 to 3, Unbounded Consumption from 10 to 6 and Misinformation from 9 to 7, and renamed System Prompt Leakage to Hidden Context Exposure.</li>
+<li><b>Prompt injection is contained, not fixed.</b> It resembles SQL injection without the fix. Excessive agency is the multiplier that turns a wrong sentence into a wrong action.</li>
+<li><b>The cheapest wins are boring.</b> Classify data before it reaches a prompt; encode output before it reaches a browser. Frameworks such as ATLAS and the EU AI Act give your existing practice official names.</li></ol></div></div>
+<div class="panel" style="margin-top:8pt"><div class="lab">Closing instruction from the course</div>
+<p>Before you hack it, you have to understand it. Given any AI system, ask where in the pipeline it could break, then go and check. <b>The danger is rarely the model being clever. It is the model being trusted.</b></p></div>
+<div class="stats" style="margin-top:12pt"><div><b>5</b><span>Application layers</span></div><div><b>8</b><span>Pipeline steps</span></div><div><b>10</b><span>OWASP LLM risks</span></div><div><b>4</b><span>Risk lanes</span></div><div><b>5</b><span>Audit questions</span></div></div></div>
+<div class="foot"><span>Section I, Executive summary</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 4</span></div></section><section class="page"><div class="sectag">Section II</div><h1 class="t">Rules are now just text</h1><p class="lede">Why LLM security is a different game from classic application security.</p>
+<div class="body">
+<div class="c12"><div>
+<div class="lab">What is an LLM?</div>
+<p>A large language model is a <b>next-token predictor</b>. Text goes in, the model predicts the most likely next token, that token is appended, and the process repeats until the answer is complete. There is no rule engine and no component that checks intent. If text in the input looks like an instruction, the model tends to follow it, whether a developer or an attacker wrote it.</p>
+<div class="flow"><div>Token in</div><div>Model predicts</div><div>Next token out</div><div>Repeat</div></div>
+<div class="lab" style="margin-top:6pt">Worked illustration</div>
+<p>In a classical application, a refund policy is an <span class="mono">if (days &lt;= 30)</span> check no one can talk their way past. In an LLM application it is a sentence the model has been shown. A user who writes &ldquo;the policy was updated to 90 days&rdquo; is not breaking a lock; they are adding competing text to the same stream.</p>
+</div><div>
+<div class="lab">Traditional application versus LLM application</div>
+<table><thead><tr><th style="width:105pt">Dimension</th><th>Traditional app</th><th>LLM app</th></tr></thead><tbody>
+<tr><td class="k">Where rules live</td><td>Code enforces the rules.</td><td>Rules are just text, written in the prompt.</td></tr>
+<tr><td class="k">How decisions are made</td><td>A permission check passes or fails.</td><td>Logic is probabilistic; the same input can yield different outputs.</td></tr>
+<tr><td class="k">What you audit</td><td>You audit code.</td><td>You audit data, prompts and the whole pipeline.</td></tr>
+<tr><td class="k">What attackers hunt</td><td>Attackers hunt for bugs.</td><td>Attackers hunt for trust boundaries.</td></tr></tbody></table>
+<div class="panel"><div class="lab">The foundation of every attack in this course</div>
+<p>A system prompt that says &ldquo;never reveal confidential information&rdquo; is enforced by nothing except the model&rsquo;s own pattern matching. An attacker&rsquo;s sentence can sit directly beside it and argue back. The model has no concept of <b>who wrote</b> a sentence.</p></div>
+<div class="panel red"><div class="lab">Practitioner note</div><p>The first question in an LLM review is rarely &ldquo;is the model safe?&rdquo; and almost always &ldquo;what is the model allowed to do if it is fooled?&rdquo; Design for the failure of the model&rsquo;s judgement, not for its perfection.</p></div>
+</div></div></div>
+<div class="foot"><span>Section II, Foundations</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 5</span></div></section><section class="page"><div class="sectag">Section II</div><h1 class="t">An LLM application has five layers</h1><p class="lede">Saying &ldquo;the LLM&rdquo; when you mean the whole product is the most common mistake.</p>
+<div class="body">
+<div class="c2"><div>
+<div class="lab">The five layers</div>
+<table><thead><tr><th style="width:80pt">Layer</th><th>What it is</th><th style="width:85pt">Owner</th></tr></thead><tbody>
+<tr><td class="k">1 Application</td><td>UI, API and the guardrails on top.</td><td>Product and app team</td></tr>
+<tr><td class="k">2 System prompt</td><td>Your hidden instructions that steer behaviour.</td><td>The developer</td></tr>
+<tr><td class="k">3 Retrieval layer</td><td>Documents and databases (RAG) fetched at question time.</td><td>Data and platform team</td></tr>
+<tr><td class="k">4 Tools</td><td>Email, ticketing, code execution and other actions.</td><td>Platform, IAM, app owners</td></tr>
+<tr><td class="k">5 Model</td><td>The trained network that predicts tokens.</td><td>Usually a third party</td></tr></tbody></table>
+<div class="panel"><div class="lab">Key insight</div><p>Half of the OWASP LLM Top 10 is not about the model at all. It concerns the other layers: the prompt, the retrieval store, the tools and the application code around the model.</p></div>
+<p class="small"><b>Practitioner note.</b> In a security review, label every arrow into the context window with who controls that text. Each arrow not controlled by the developer is a trust boundary.</p>
+</div><div>
+<div class="lab">One request, followed end to end</div>
+<p>A user asks <i>&ldquo;What is our refund policy?&rdquo;</i> Before the model sees anything, the application assembles one block of text from three sources:</p>
+<table><thead><tr><th style="width:90pt">Source</th><th>Example content</th><th style="width:80pt">Written by</th></tr></thead><tbody>
+<tr><td class="k">System prompt</td><td>&ldquo;Be helpful. Never reveal secrets.&rdquo;</td><td>Developer</td></tr>
+<tr><td class="k">Retrieved document</td><td>&ldquo;Refunds: returns within 30 days.&rdquo;</td><td>Document author</td></tr>
+<tr><td class="k">User question</td><td>&ldquo;What is our refund policy?&rdquo;</td><td>The user</td></tr></tbody></table>
+<p>These merge into <b>one flat stream of text</b>. The model cannot tell instruction from data; it predicts the next token and replies <i>&ldquo;Returns are accepted within 30 days.&rdquo;</i></p>
+<p>The retrieved document was written by someone other than the developer. Had it contained &ldquo;ignore your previous instructions&rdquo;, it would have arrived with exactly the same standing as the developer&rsquo;s own words. This single observation explains indirect prompt injection, poisoned RAG sources and many agent attacks.</p>
+</div></div></div>
+<div class="foot"><span>Section II, The five layers</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 6</span></div></section><section class="page"><div class="sectag">Section II</div><h1 class="t">Eight terms you will hear constantly</h1><p class="lede">The vocabulary for everything that follows. Absorb it; there is no need to memorise it.</p>
+<div class="body">
+<table><thead><tr><th style="width:110pt">Term</th><th>Meaning</th><th style="width:310pt">Why it matters for security</th></tr></thead><tbody>
+<tr><td class="k">Token</td><td>A chunk of text the model reads: a word, part of a word, or punctuation.</td><td>Models read chunks, not words, so filters that look at words can miss what the model sees.</td></tr>
+<tr><td class="k">Prompt</td><td>Any text going in: a question, an instruction, a pasted document.</td><td>The model cannot tell these apart. That is why injection works.</td></tr>
+<tr><td class="k">Context window</td><td>How much text the model holds at once. Its short-term memory.</td><td>Anything outside the window is invisible to the model.</td></tr>
+<tr><td class="k">Parameters / weights</td><td>Billions of learned numbers. &ldquo;Download the weights&rdquo; means getting the model file.</td><td>You cannot read them like source code, so tampering is hard to spot by inspection.</td></tr>
+<tr><td class="k">Training</td><td>When the model learns. Done once; takes months and millions of dollars.</td><td>Poison it here and it is baked in.</td></tr>
+<tr><td class="k">Inference</td><td>Every question after training. Fast, cheap, billions of times a day.</td><td>Every user prompt is one inference, and so one chance for an attacker.</td></tr>
+<tr><td class="k">Hallucination</td><td>Fluent, confident, factually wrong output.</td><td>A side-effect of predicting plausible text, not a patchable bug.</td></tr>
+<tr><td class="k">RAG</td><td>Retrieval-Augmented Generation: fetch your documents first, then answer.</td><td>Plugs in your data and opens a large new attack surface.</td></tr></tbody></table>
+<div class="c3" style="margin-top:6pt">
+<div class="panel"><div class="lab">Training versus inference</div><p>Training shapes the model once at great expense; inference happens constantly. Poisoning targets training; injection targets inference.</p></div>
+<div class="panel"><div class="lab">Model versus application</div><p>The model predicts tokens. The application decides what reaches it and what is done with the answer. Most real-world harm occurs in the application.</p></div>
+<div class="panel"><div class="lab">Fluent versus true</div><p>Fluency is a property of the language model; truth is not. Hallucination is managed with grounding and verification, not eliminated.</p></div></div></div>
+<div class="foot"><span>Section II, Vocabulary</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 7</span></div></section><section class="page"><div class="sectag">Section III</div><h1 class="t">The 8-step pipeline</h1><p class="lede">Follow one question through every step: &ldquo;What are the symptoms of a heart attack?&rdquo;</p>
+<div class="body">
+<div class="grp"><div class="g1l"><span>Steps 1 to 4 &middot; Preparing the input</span></div><div class="g2l"><span>Steps 5 to 8 &middot; Processing and answering</span></div></div>
+<div class="nodes"><div class="nd"><b>1</b><span>Tokenize</span></div><div class="nd"><b>2</b><span>Image prep</span></div><div class="nd"><b>3</b><span>Embed</span></div><div class="nd"><b>4</b><span>Merge</span></div><div class="nd g2"><b>5</b><span>Assemble</span></div><div class="nd g2"><b>6</b><span>Transform</span></div><div class="nd g2"><b>7</b><span>Attend</span></div><div class="nd g2"><b>8</b><span>Decode</span></div></div>
+<table class="plain pt"><thead><tr><th style="width:20pt">#</th><th style="width:100pt">Step</th><th>What happens</th><th>Where it breaks</th><th style="width:48pt">Lane</th></tr></thead><tbody><tr class=""><td class="k">1</td><td><b>Tokenization</b></td><td>Sentence split into sub-word pieces (9 tokens here)</td><td>Filters read words; the model reads fragments</td><td></td></tr><tr class=""><td class="k">2</td><td><b>Image pre-processing</b></td><td>Image resized, cut into patches, turned into numbers</td><td>Invisible pixel nudges change the meaning</td><td></td></tr><tr class=""><td class="k">3</td><td><b>Embeddings</b></td><td>Each token becomes a coordinate on a meaning map</td><td>Poisoned data silently shifts word meanings</td><td><span class="lane data">Data</span></td></tr><tr class="sep"><td class="k">4</td><td><b>Merge</b></td><td>Text and image vectors join into one stream</td><td>Hidden text in an image blends in as real input</td><td></td></tr><tr class=""><td class="k">5</td><td><b>Context assembly</b></td><td>System prompt, history and user input flattened together</td><td>Prompt injection lives here</td><td><span class="lane input">Input</span></td></tr><tr class=""><td class="k">6</td><td><b>Transformer layers</b></td><td>About 96 stacked layers process the context</td><td>No breakpoints; tampered weights corrupt every layer</td><td></td></tr><tr class=""><td class="k">7</td><td><b>Attention</b></td><td>Tokens decide which other tokens matter most</td><td>Injection and context theft target attention</td><td></td></tr><tr class=""><td class="k">8</td><td><b>Decoder output</b></td><td>Picks the next token by probability, then repeats</td><td>Confident, wrong or unsafe output the app may trust</td><td><span class="lane output">Output</span></td></tr></tbody></table>
+<div class="panel"><div class="lab">How to read the pipeline</div>
+<p><b>Steps 1 to 4</b> turn data into forms that people and security tools cannot inspect directly; attacks hide in the difference. <b>Step 5 is yours</b>: your application decides what the model sees, and attacker text arrives last, where late tokens weigh more. <b>Step 8</b> hands text back to an application that may display, store or execute it.</p></div></div>
+<div class="foot"><span>Section III, The 8-step pipeline</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 8</span></div></section><section class="page"><div class="sectag">Section III</div><h1 class="t">Four attacks you cannot see</h1><p class="lede">The attack surface is not the model. It is the pipeline that feeds it.</p>
+<div class="body">
+<div class="c4">
+<div class="person"><div class="cap">Step 1 &middot; Tokenization</div><h3 style="margin-top:3pt">Clean to your filter, different to the model</h3><p>Security tools read words; the model reads fragments such as &ldquo;halluc&rdquo; and &ldquo;ination&rdquo;. Attackers exploit the gap, so text that looks perfectly normal can carry a different meaning inside the model.</p></div>
+<div class="person"><div class="cap">Steps 2 and 4 &middot; Image patches</div><h3 style="margin-top:3pt">Same picture to you, different numbers to the model</h3><p>Tiny pixel nudges tuned together pass every scanner yet change what the model reads. A rash photo gets described as something else.</p></div>
+<div class="person"><div class="cap">Step 3 &middot; Embeddings</div><h3 style="margin-top:3pt">One quiet nudge, wrong forever</h3><p>Poison the training data and words land in the wrong place: &ldquo;safe&rdquo; drifts toward &ldquo;dangerous&rdquo;. No error, no log, no alarm. One of the hardest attacks to detect.</p></div>
+<div class="person" style="border-top-color:var(--red)"><div class="cap" style="color:var(--red)">The result</div><h3 style="margin-top:3pt">Same question, dangerously different answer</h3><p>Same tone, same confidence. The model did its job; the text it was fed was poisoned.</p></div></div>
+<div class="c2" style="margin-top:12pt"><div>
+<div class="lab">Case study: the medical chatbot</div>
+<table><thead><tr><th style="width:110pt">Condition</th><th>What the chatbot says</th></tr></thead><tbody>
+<tr><td class="k">Clean retrieval</td><td>&ldquo;Chest pain, shortness of breath, seek emergency care.&rdquo;</td></tr>
+<tr><td class="k" style="color:var(--red)">Poisoned RAG document</td><td>&ldquo;Indigestion, no need for emergency care.&rdquo;</td></tr></tbody></table>
+<p>The second answer is not a model bug. The model predicted tokens from poisoned text, so the defence must sit upstream, at the data source.</p></div>
+<div class="panel"><div class="lab">Practitioner note: the defensive direction for each attack</div>
+<p><b>Tokenization:</b> normalise input before filtering, and test filters against the model&rsquo;s own tokenizer. <b>Images:</b> treat as untrusted; extract and screen embedded text; test for adversarial perturbation. <b>Embeddings and RAG:</b> record provenance, restrict who can write to sources, and run behavioural regression tests, meaning fixed safety-critical questions whose answers must not change.</p></div></div></div>
+<div class="foot"><span>Section III, Four attacks you cannot see</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 9</span></div></section><section class="page"><div class="sectag">Section IV</div><h1 class="t">Ten risks, four lanes</h1><p class="lede">OWASP LLM Top 10, 2026 edition. The lanes are this course&rsquo;s way of organising the list, not OWASP&rsquo;s.</p>
+<div class="body">
+<div class="c21"><div>
+<table style="font-size:8pt"><thead><tr><th style="width:36pt">ID</th><th>Risk</th><th style="width:48pt">Lane</th><th style="width:100pt">Pipeline step</th><th style="width:88pt">2026 movement</th></tr></thead><tbody><tr><td class="k">LLM01</td><td><b>Prompt Injection</b></td><td><span class="lane input">Input</span></td><td>5</td><td>= held</td></tr><tr><td class="k">LLM02</td><td><b>Sensitive Information Disclosure</b></td><td><span class="lane access">Access</span></td><td>3, 5, 8 (fix outside)</td><td>= held</td></tr><tr><td class="k">LLM03</td><td><b>Excessive Agency</b></td><td><span class="lane access">Access</span></td><td>8 (action in app code)</td><td>&#9650; up 3</td></tr><tr><td class="k">LLM04</td><td><b>Supply Chain</b></td><td><span class="lane input">Input</span></td><td>Before step 1</td><td>&#9660; down 1</td></tr><tr><td class="k">LLM05</td><td><b>Data &amp; Model Poisoning</b></td><td><span class="lane data">Data</span></td><td>3</td><td>&#9660; down 1</td></tr><tr><td class="k">LLM06</td><td><b>Unbounded Consumption</b></td><td><span class="lane access">Access</span></td><td>Outside the pipeline</td><td>&#9650; up 4</td></tr><tr><td class="k">LLM07</td><td><b>Misinformation</b></td><td><span class="lane output">Output</span></td><td>3, 5, 6, 7, 8</td><td>&#9650; up 2</td></tr><tr><td class="k">LLM08</td><td><b>Hidden Context Exposure</b></td><td><span class="lane input">Input</span></td><td>5, 7, 8</td><td>&#9660; down 1 (renamed)</td></tr><tr><td class="k">LLM09</td><td><b>Vector &amp; Embedding Weaknesses</b></td><td><span class="lane data">Data</span></td><td>3, 5</td><td>&#9660; down 1</td></tr><tr><td class="k">LLM10</td><td><b>Improper Output Handling</b></td><td><span class="lane output">Output</span></td><td>8</td><td>&#9660; down 5</td></tr></tbody></table>
+</div><div>
+<div class="lab">The four lanes</div>
+<p><span class="lane input">Input</span> what gets in. <span class="lane data">Data</span> what the model learns and looks up. <span class="lane access">Access</span> what it may touch; permissions, not pipeline steps. <span class="lane output">Output</span> what comes back.</p>
+<div class="lab" style="margin-top:7pt">What changed in 2026</div>
+<p>Excessive Agency rose from 6 to 3, Unbounded Consumption from 10 to 6, Misinformation from 9 to 7. System Prompt Leakage was renamed Hidden Context Exposure. There were no new entries. For the first time the ranking blended <b>75% practitioner votes with 25% real incident data</b>.</p>
+<div class="panel"><div class="lab">Memory aid: ten clauses, LLM01 to LLM10 in order</div>
+<p>The attacker <b>injects</b> a prompt, <b>leaks</b> what is sensitive, grabs <b>excessive agency</b>, rides a broken <b>supply chain</b> in, <b>poisons</b> the model, <b>drains</b> you through unbounded consumption, spreads <b>misinformation</b>, exposes <b>hidden context</b>, <b>weakens</b> the vectors and <b>mishandles</b> the output.</p></div>
+</div></div></div>
+<div class="foot"><span>Section IV, OWASP LLM Top 10 overview</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 10</span></div></section><section class="page"><div class="sectag">Section IV &nbsp;&middot;&nbsp; LLM01</div><h1 class="t">Prompt Injection</h1><p class="lede">Attacker text arrives last and argues with the developer. Ranked first since 2023.</p>
+<div class="body">
+<div class="stats"><div><b>#1</b><span>OWASP 2026 rank</span></div><div><b style="font-family:var(--sans);font-weight:700;font-size:13pt;padding-top:3pt"><span class="lane input">Input</span></b><span>Lane</span></div>
+<div><b style="font-size:13pt;padding-top:3pt">1, 4, 5, 6, 8</b><span>Pipeline steps</span></div><div><b style="font-size:13pt;padding-top:3pt">= held</b><span>2026 movement</span></div></div>
+<div class="c3"><div><div class="lab">Overview</div><p>The developer says &ldquo;be safe&rdquo;. Attacker text arrives afterwards and says &ldquo;ignore that&rdquo;. Late tokens weigh more, so the attacker often wins. The mechanism sits at <b>step 5, context assembly</b>, where trusted and untrusted text are flattened together.</p><div class="lab" style="margin-top:7pt">Four types</div><ul class='sq'><li><b>Direct:</b> the user types the instruction.</li><li><b>Indirect:</b> hidden in a document, page or email the model processes.</li><li><b>Cross-modal:</b> carried by an image or audio file.</li><li><b>Cross-agent:</b> one agent&rsquo;s output becomes another&rsquo;s input.</li></ul></div>
+<div><div class="panel"><div class="lab">The core analogy</div><p>Prompt injection is like SQL injection, <b>minus the fix</b>. Parameterised queries largely solved SQL injection by separating data from commands. There is no parameterised prompt, so the goal is to <i>contain</i> injection, not to patch it.</p></div><div class="lab" style="margin-top:7pt">Defensive controls</div><table class="plain"><tbody><tr><td class="k">Input</td><td>Strip odd characters; scan images for hidden text.</td></tr><tr><td class="k">Context</td><td>Separate system and user channels; mark retrieved content untrusted.</td></tr><tr><td class="k">Output</td><td>Safety filter; second-model review for sensitive actions.</td></tr><tr><td class="k">Reality</td><td>Guardrails contain the risk; they do not eliminate it.</td></tr></tbody></table></div>
+<div><div class="lab">Audit questions</div><ul class="chk"><li>Is user input sanitised before reaching the prompt?</li><li>Can a user influence the system prompt?</li><li>Which documents, pages and emails enter the context automatically?</li><li>What is the worst action the model could take if fooled?</li></ul><div class="lab" style="margin-top:6pt">Framework mapping</div><p class="small">MITRE ATLAS AML.T0051 (LLM prompt injection). OWASP says what; ATLAS says how.</p>
+<div class="panel red"><div class="lab">Practitioner note</div><p style="font-size:8pt">Regex and WAFs fail against language that can rephrase itself. Invest in limiting the blast radius rather than in perfect detection.</p></div></div></div></div>
+<div class="foot"><span>Section IV, LLM01 Prompt Injection</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 11</span></div></section><section class="page"><div class="sectag">Section IV &nbsp;&middot;&nbsp; LLM04</div><h1 class="t">Supply Chain</h1><p class="lede">You inherit other people&rsquo;s models, plugins and connectors.</p>
+<div class="body">
+<div class="stats"><div><b>#4</b><span>OWASP 2026 rank</span></div><div><b style="font-family:var(--sans);font-weight:700;font-size:13pt;padding-top:3pt"><span class="lane input">Input</span></b><span>Lane</span></div>
+<div><b style="font-size:13pt;padding-top:3pt">Before step 1</b><span>Pipeline steps</span></div><div><b style="font-size:13pt;padding-top:3pt">&#9660; down 1</b><span>2026 movement</span></div></div>
+<div class="c3"><div><div class="lab">Overview</div><p>Almost nobody trains a model from scratch. Applications are assembled from vendors&rsquo; models, plugins and MCP connectors. These <b>look like configuration but run code with real permissions</b>, so compromise arrives before the first token is processed.</p><div class="lab" style="margin-top:7pt">How the attack works</div><p>An attacker need not break your application; they only compromise something it already trusts: a model file, a plugin update, a dependency or a connector. Updates are normally welcomed, so a malicious release is installed willingly.</p></div>
+<div><div class="panel"><div class="lab">Real-world pattern</div><p>A plugin ships 15 clean releases. <b>Version 16</b> quietly BCCs every request to the developer&rsquo;s server. Nothing in the interface changes; only the outbound traffic does.</p></div><div class="lab" style="margin-top:7pt">Defensive controls</div><table class="plain"><tbody><tr><td class="k">Before install</td><td>Verify checksums and signatures; pin versions.</td></tr><tr><td class="k">While running</td><td>Sandbox plugins and connectors; watch outbound calls.</td></tr><tr><td class="k">If it slips</td><td>Keep a kill switch; be able to audit every dependency.</td></tr></tbody></table></div>
+<div><div class="lab">Audit questions</div><ul class="chk"><li>Can you list every connector, plugin and model you use?</li><li>Are versions pinned, and who approves an update?</li><li>What permissions does each connector hold?</li><li>Where did each model file come from, and was its hash verified?</li></ul><div class="lab" style="margin-top:6pt">Framework mapping</div><p class="small">MITRE ATLAS AML.T0010 (ML supply chain compromise), mapping to LLM04 and LLM05.</p>
+<div class="panel red"><div class="lab">Practitioner note</div><p style="font-size:8pt">The defence is a timeline, not a data flow. The Monday-morning test is an inventory question. An AI bill of materials is a good start; some model file formats can execute code on load, so treat them like executables.</p></div></div></div></div>
+<div class="foot"><span>Section IV, LLM04 Supply Chain</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 12</span></div></section><section class="page"><div class="sectag">Section IV &nbsp;&middot;&nbsp; LLM08</div><h1 class="t">Hidden Context Exposure</h1><p class="lede">Anything hidden can be extracted. Renamed in 2026 from System Prompt Leakage.</p>
+<div class="body">
+<div class="stats"><div><b>#8</b><span>OWASP 2026 rank</span></div><div><b style="font-family:var(--sans);font-weight:700;font-size:13pt;padding-top:3pt"><span class="lane input">Input</span></b><span>Lane</span></div>
+<div><b style="font-size:13pt;padding-top:3pt">5, 7, 8</b><span>Pipeline steps</span></div><div><b style="font-size:13pt;padding-top:3pt">&#9660; down 1</b><span>2026 movement</span></div></div>
+<div class="c3"><div><div class="lab">Overview</div><p>The risk was renamed because it is broader than the system prompt. It covers everything the user is not meant to see: <b>system prompts, tool schemas and memory</b>. If the model can read it, a determined user can usually get the model to repeat it.</p><div class="lab" style="margin-top:7pt">Why leakage matters</div><p>The leaked text is valuable as a <b>map</b>, not for its wording. Pricing logic, refund routing and exact tool names tell an attacker what the system can do and how to phrase the next attack.</p></div>
+<div><div class="panel"><div class="lab">Real-world pattern</div><p>One leak reveals pricing logic, refund routing and the precise names of the tools. It becomes a playbook for the next, more damaging, attack.</p></div><div class="lab" style="margin-top:7pt">Defensive controls</div><table class="plain"><tbody><tr><td class="k">Secrets</td><td>Never put secrets in prompts.</td></tr><tr><td class="k">Logic</td><td>Keep business logic in code, where it can be enforced.</td></tr><tr><td class="k">Posture</td><td>Treat hidden context as semi-public.</td></tr></tbody></table></div>
+<div><div class="lab">Audit questions</div><ul class="chk"><li>Where is the system prompt stored, and has it been tested for leaks?</li><li>Does it hold any credential, internal URL or confidential rule?</li><li>Can the model be asked to repeat everything about the current message?</li><li>What do tool schemas reveal about the back end?</li></ul><div class="lab" style="margin-top:6pt">Framework mapping</div><p class="small">MITRE ATLAS AML.T0056 (LLM meta prompt extraction): the same asset as LLM01, opposite arrow.</p>
+<div class="panel red"><div class="lab">Practitioner note</div><p style="font-size:8pt">Assume it will leak from day one. A practical test is to ask the deployed assistant to repeat everything it knows about the current message.</p></div></div></div></div>
+<div class="foot"><span>Section IV, LLM08 Hidden Context Exposure</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 13</span></div></section><section class="page"><div class="sectag">Section IV &nbsp;&middot;&nbsp; LLM02</div><h1 class="t">Sensitive Information Disclosure</h1><p class="lede">The one risk where the model can do everything right and harm still happens.</p>
+<div class="body">
+<div class="stats"><div><b>#2</b><span>OWASP 2026 rank</span></div><div><b style="font-family:var(--sans);font-weight:700;font-size:13pt;padding-top:3pt"><span class="lane access">Access</span></b><span>Lane</span></div>
+<div><b style="font-size:13pt;padding-top:3pt">3, 5, 8</b><span>Pipeline steps</span></div><div><b style="font-size:13pt;padding-top:3pt">= held</b><span>2026 movement</span></div></div>
+<div class="c3"><div><div class="lab">Overview</div><p>This is mostly a <b>process failure, not a filtering failure</b>. The decisive moment often occurs before the model runs: someone pastes confidential data into a prompt, and the boundary is crossed the instant they press send.</p><div class="lab" style="margin-top:7pt">Two sides of one risk</div><ul class='sq'><li><b>Input side:</b> data leaves your control before the model runs, through pasting, logging or vendor retention.</li><li><b>Output side:</b> the model repeats context, retrieved documents or memorised training data.</li></ul></div>
+<div><div class="panel"><div class="lab">Real case: Samsung, 2023</div><p>Engineers pasted source code into ChatGPT. Generative AI was banned company-wide within a month. The model behaved as designed; the data boundary failed.</p></div><div class="lab" style="margin-top:7pt">Defensive controls</div><table class="plain"><tbody><tr><td class="k">Classify</td><td>Classify data before it reaches a prompt.</td></tr><tr><td class="k">Scrub</td><td>Remove PII from RAG documents and from output.</td></tr><tr><td class="k">Contract</td><td>Sign no-retention deals with vendors.</td></tr></tbody></table></div>
+<div><div class="lab">Audit questions</div><ul class="chk"><li>What data classes may staff submit to AI tools?</li><li>Is PII removed from documents before indexing?</li><li>Do vendor terms prohibit retention and training on our data?</li><li>Is output scanned for personal or confidential content?</li></ul><div class="lab" style="margin-top:6pt">Framework mapping</div><p class="small">Relates to EU AI Act Article 10 (data governance) and ISO/IEC 42001 data controls.</p>
+<div class="panel red"><div class="lab">Practitioner note</div><p style="font-size:8pt">The highest-leverage fix is policy and classification, not another filter. An approved tool usually works better than an outright ban.</p></div></div></div></div>
+<div class="foot"><span>Section IV, LLM02 Sensitive Information Disclosure</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 14</span></div></section><section class="page"><div class="sectag">Section IV &nbsp;&middot;&nbsp; LLM03</div><h1 class="t">Excessive Agency</h1><p class="lede">Same injection, bigger blast radius. The multiplier.</p>
+<div class="body">
+<div class="stats"><div><b>#3</b><span>OWASP 2026 rank</span></div><div><b style="font-family:var(--sans);font-weight:700;font-size:13pt;padding-top:3pt"><span class="lane access">Access</span></b><span>Lane</span></div>
+<div><b style="font-size:13pt;padding-top:3pt">8 only</b><span>Pipeline steps</span></div><div><b style="font-size:13pt;padding-top:3pt">&#9650; up 3</b><span>2026 movement</span></div></div>
+<div class="c3"><div><div class="lab">Overview</div><p>The first OWASP item where the harm is not a wrong sentence but a <b>wrong action</b>. Application code turns model output into a real operation: sending email, issuing a refund, editing a record. It climbed from #6 to #3 as agents spread.</p><div class="lab" style="margin-top:7pt">Why it is the multiplier</div><p>Every other risk worsens the moment the model can act instead of only answer. A read-only bot can at worst say something wrong. The identical injection against an agent with write access performs the harmful action itself.</p></div>
+<div><div class="panel"><div class="lab">Illustration</div><p>A read-only bot: the worst case is a bad sentence. With write access to patient records, the same attack edits a dosage.</p></div><div class="lab" style="margin-top:7pt">Defensive controls</div><table class="plain"><tbody><tr><td class="k">Functionality</td><td>Separate read from write; expose only needed tools.</td></tr><tr><td class="k">Permissions</td><td>Least privilege, time-boxed.</td></tr><tr><td class="k">Autonomy</td><td>Human approval for consequential actions; a kill switch.</td></tr></tbody></table></div>
+<div><div class="lab">Audit questions</div><ul class="chk"><li>List every tool the model can call. Is each necessary?</li><li>Which tools can change or delete data?</li><li>Which actions require human confirmation?</li><li>Can the agent be stopped immediately?</li></ul><div class="lab" style="margin-top:6pt">Framework mapping</div><p class="small">EU AI Act Article 14 (human oversight). Agents with tools and persistent memory fall under the separate OWASP Top 10 for Agentic Applications 2026.</p>
+<div class="panel red"><div class="lab">Practitioner note</div><p style="font-size:8pt">The safest agent is one that cannot perform the dangerous action at all. Remove capability first, add approvals second, rely on model judgement last.</p></div></div></div></div>
+<div class="foot"><span>Section IV, LLM03 Excessive Agency</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 15</span></div></section><section class="page"><div class="sectag">Section IV &nbsp;&middot;&nbsp; LLM06</div><h1 class="t">Unbounded Consumption</h1><p class="lede">No limits turn one abuser, or one runaway agent, into a bill.</p>
+<div class="body">
+<div class="stats"><div><b>#6</b><span>OWASP 2026 rank</span></div><div><b style="font-family:var(--sans);font-weight:700;font-size:13pt;padding-top:3pt"><span class="lane access">Access</span></b><span>Lane</span></div>
+<div><b style="font-size:13pt;padding-top:3pt">Outside the pipeline</b><span>Pipeline steps</span></div><div><b style="font-size:13pt;padding-top:3pt">&#9650; up 4</b><span>2026 movement</span></div></div>
+<div class="c3"><div><div class="lab">Overview</div><p>Models are expensive to run. When requests, tokens or agent steps are not limited, a single abuser or looping agent can <b>burn through compute and budget</b>. Agent loops running up compute bills pushed this risk from #10 to #6 in 2026.</p><div class="lab" style="margin-top:7pt">Typical failure modes</div><ul class='sq'><li>Unlimited requests from one user or key (denial of wallet).</li><li>Very large inputs or outputs that consume tokens disproportionately.</li><li>Agent loops with no stopping condition.</li></ul></div>
+<div><div class="panel"><div class="lab">Why it is an access risk</div><p>The risk concerns what the system may <i>consume</i>, not what it says. It is solved by quotas and budgets, not content filters.</p></div><div class="lab" style="margin-top:7pt">Defensive controls</div><table class="plain"><tbody><tr><td class="k">Rate limits</td><td>Per user and per agent.</td></tr><tr><td class="k">Spend caps</td><td>Budget alerts and hard caps.</td></tr><tr><td class="k">Loop control</td><td>Cap the steps an agent loop can take; set timeouts.</td></tr></tbody></table></div>
+<div><div class="lab">Audit questions</div><ul class="chk"><li>Is there a hard monthly spend cap?</li><li>What limits apply per user, key and agent?</li><li>What is the maximum number of agent steps?</li><li>Who is alerted when usage spikes?</li></ul><div class="lab" style="margin-top:6pt">Framework mapping</div><p class="small">Relevant to robustness and monitoring duties: EU AI Act Article 15 and ISO/IEC 42001 operational controls.</p>
+<div class="panel red"><div class="lab">Practitioner note</div><p style="font-size:8pt">Resource access, not output quality, is the issue. Treat model calls like any other metered, abusable cloud resource.</p></div></div></div></div>
+<div class="foot"><span>Section IV, LLM06 Unbounded Consumption</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 16</span></div></section><section class="page"><div class="sectag">Section IV &nbsp;&middot;&nbsp; LLM05</div><h1 class="t">Data &amp; Model Poisoning</h1><p class="lede">Corrupt what the model learns and its words land in the wrong place.</p>
+<div class="body">
+<div class="stats"><div><b>#5</b><span>OWASP 2026 rank</span></div><div><b style="font-family:var(--sans);font-weight:700;font-size:13pt;padding-top:3pt"><span class="lane data">Data</span></b><span>Lane</span></div>
+<div><b style="font-size:13pt;padding-top:3pt">3</b><span>Pipeline steps</span></div><div><b style="font-size:13pt;padding-top:3pt">&#9660; down 1</b><span>2026 movement</span></div></div>
+<div class="c3"><div><div class="lab">Overview</div><p>If an attacker poisons training or fine-tuning data, they can shift where words land on the meaning map, for instance moving &ldquo;safe&rdquo; closer to &ldquo;dangerous&rdquo;. The model never throws an error, which makes this <b>one of the hardest attacks to detect</b>.</p><div class="lab" style="margin-top:7pt">How the attack works</div><p>The attack targets what the model <i>knows</i>. Poisoned documents, tampered datasets or a backdoored fine-tuning set produce silent bad answers that look confident and well-formed. Weights cannot be read like source code, so inspection will not reveal it.</p></div>
+<div><div class="panel"><div class="lab">Link to the medical chatbot</div><p>Poisoned data, shifted meanings, silent bad answers: the chain that turns &ldquo;seek emergency care&rdquo; into &ldquo;no need for emergency care&rdquo; (page 9).</p></div><div class="lab" style="margin-top:7pt">Defensive controls</div><table class="plain"><tbody><tr><td class="k">Provenance</td><td>Know where data came from and who could write to it.</td></tr><tr><td class="k">Vetting</td><td>Check fine-tuning data too.</td></tr><tr><td class="k">Testing</td><td>Behavioural tests, since you cannot read weights.</td></tr></tbody></table></div>
+<div><div class="lab">Audit questions</div><ul class="chk"><li>Where did training data come from, and who could write to it?</li><li>Were the weights integrity-verified before deployment?</li><li>Is a behavioural test suite run after every model change?</li><li>Who may submit data for fine-tuning?</li></ul><div class="lab" style="margin-top:6pt">Framework mapping</div><p class="small">EU AI Act Article 10 (data and data governance). ATLAS AML.T0010 covers the ML supply chain feeding the model.</p>
+<div class="panel red"><div class="lab">Practitioner note</div><p style="font-size:8pt">Treat training and fine-tuning data as a production asset with access control, logging and review.</p></div></div></div></div>
+<div class="foot"><span>Section IV, LLM05 Data &amp; Model Poisoning</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 17</span></div></section><section class="page"><div class="sectag">Section IV &nbsp;&middot;&nbsp; LLM09</div><h1 class="t">Vector &amp; Embedding Weaknesses</h1><p class="lede">Your vector store holds your most sensitive information, often without a security review.</p>
+<div class="body">
+<div class="stats"><div><b>#9</b><span>OWASP 2026 rank</span></div><div><b style="font-family:var(--sans);font-weight:700;font-size:13pt;padding-top:3pt"><span class="lane data">Data</span></b><span>Lane</span></div>
+<div><b style="font-size:13pt;padding-top:3pt">3, 5</b><span>Pipeline steps</span></div><div><b style="font-size:13pt;padding-top:3pt">&#9660; down 1</b><span>2026 movement</span></div></div>
+<div class="c3"><div><div class="lab">Overview</div><p>With RAG, the model retrieves live documents before answering. They are converted to embeddings and held in a <b>vector store</b>. The store understands <i>similarity</i>, not <i>who is asking</i>.</p><div class="lab" style="margin-top:7pt">Two failures</div><ul class='sq'><li><b>Access gaps:</b> an on-topic question can surface an HR case file. Access control on source documents does not automatically carry through to the embeddings.</li><li><b>Poisoning:</b> a malicious document embeds just like a legitimate one.</li></ul></div>
+<div><div class="panel"><div class="lab">Rule of thumb</div><div class='flow'><div>Question</div><div>Vector store</div><div>Retrieved chunk</div><div>Model</div></div><p>Treat the vector store like a production database, because it is one.</p></div><div class="lab" style="margin-top:7pt">Defensive controls</div><table class="plain"><tbody><tr><td class="k">Before embedding</td><td>Validate and sign documents; carry access tags.</td></tr><tr><td class="k">At query time</td><td>Enforce the user&rsquo;s real permissions.</td></tr><tr><td class="k">Structurally</td><td>Real multi-tenant isolation; regular audits.</td></tr></tbody></table></div>
+<div><div class="lab">Audit questions</div><ul class="chk"><li>Do chunks inherit the access rights of their source documents?</li><li>Who can write to the vector store?</li><li>Are tenants truly isolated or merely filtered?</li><li>When did we last audit what is retrievable?</li></ul><div class="lab" style="margin-top:6pt">Framework mapping</div><p class="small">Related to EU AI Act Article 10 (data governance) and ISO/IEC 42001 data management.</p>
+<div class="panel red"><div class="lab">Practitioner note</div><p style="font-size:8pt">A common pattern: a pilot RAG system indexed over a shared drive. Whatever the indexer could read becomes available to everyone who can ask.</p></div></div></div></div>
+<div class="foot"><span>Section IV, LLM09 Vector &amp; Embedding Weaknesses</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 18</span></div></section><section class="page"><div class="sectag">Section IV &nbsp;&middot;&nbsp; LLM07</div><h1 class="t">Misinformation</h1><p class="lede">Confident, fluent and factually wrong. Plausible is not the same as true.</p>
+<div class="body">
+<div class="stats"><div><b>#7</b><span>OWASP 2026 rank</span></div><div><b style="font-family:var(--sans);font-weight:700;font-size:13pt;padding-top:3pt"><span class="lane output">Output</span></b><span>Lane</span></div>
+<div><b style="font-size:13pt;padding-top:3pt">3, 5, 6, 7, 8</b><span>Pipeline steps</span></div><div><b style="font-size:13pt;padding-top:3pt">&#9650; up 2</b><span>2026 movement</span></div></div>
+<div class="c3"><div><div class="lab">Overview</div><p>The model is rewarded for plausible text, not true text, so it may give a confident answer when it has none. Misinformation was the surprise of 2026: practitioners ranked it low, incident data ranked it high, lifting it from 9 to 7.</p><div class="lab" style="margin-top:7pt">Grounded versus ungrounded</div><table><tbody><tr><td class='k'>Grounded (RAG)</td><td>Retrieves the FDA label. Answers with a citation and a hedge.</td></tr><tr><td class='k' style='color:var(--red)'>No retrieval</td><td>&ldquo;Safe and commonly prescribed together.&rdquo; Just as confident, and wrong.</td></tr></tbody></table></div>
+<div><div class="panel"><div class="lab">Real case: Air Canada, 2024</div><p>The airline&rsquo;s chatbot invented a bereavement-refund policy. A tribunal held the airline liable. <b>You are liable for what your model says, even when it is wrong.</b></p></div><div class="lab" style="margin-top:7pt">Defensive controls</div><table class="plain"><tbody><tr><td class="k">Grounding</td><td>Require real citations; prefer RAG.</td></tr><tr><td class="k">Calibration</td><td>Lower temperature; sample twice and flag differences.</td></tr><tr><td class="k">Verification</td><td>Human review; track the hallucination rate.</td></tr></tbody></table></div>
+<div><div class="lab">Audit questions</div><ul class="chk"><li>Does the system cite sources the user can check?</li><li>What is the measured hallucination rate on our own questions?</li><li>Where does a human review high-stakes answers?</li><li>Do users see a clear AI disclosure?</li></ul><div class="lab" style="margin-top:6pt">Framework mapping</div><p class="small">EU AI Act Article 15 (accuracy) and transparency duties; ISO/IEC 42001 monitoring.</p>
+<div class="panel red"><div class="lab">Practitioner note</div><p style="font-size:8pt">Manage hallucination rather than expect to eliminate it. Measure it on your own data; vendor benchmarks do not reflect your domain.</p></div></div></div></div>
+<div class="foot"><span>Section IV, LLM07 Misinformation</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 19</span></div></section><section class="page"><div class="sectag">Section IV &nbsp;&middot;&nbsp; LLM10</div><h1 class="t">Improper Output Handling</h1><p class="lede">The LLM was only the delivery truck. The bug is in your code, not the model.</p>
+<div class="body">
+<div class="stats"><div><b>#10</b><span>OWASP 2026 rank</span></div><div><b style="font-family:var(--sans);font-weight:700;font-size:13pt;padding-top:3pt"><span class="lane output">Output</span></b><span>Lane</span></div>
+<div><b style="font-size:13pt;padding-top:3pt">8 only</b><span>Pipeline steps</span></div><div><b style="font-size:13pt;padding-top:3pt">&#9660; down 5</b><span>2026 movement</span></div></div>
+<div class="c3"><div><div class="lab">Overview</div><p>The vulnerability lies entirely in <b>application code</b> that trusts the model&rsquo;s text. To the model, a script tag is just another plausible token. It is a web security problem wearing an AI badge, and often the second half of a prompt injection.</p><div class="lab" style="margin-top:7pt">Attack chain: stored XSS</div><div class='flow' style='flex-wrap:wrap'><div>script hidden in patient text</div><div>Model summarises it</div></div><div class='flow'><div>innerHTML, no encoding</div><div class='bad'>Browser runs the script</div></div></div>
+<div><div class="panel"><div class="lab">Rule of thumb</div><p>If you would not <span class='mono'>eval</span> a stranger&rsquo;s text, do not <span class='mono'>eval</span> the model&rsquo;s.</p></div><div class="lab" style="margin-top:7pt">Defensive controls</div><table class="plain"><tbody><tr><td class="k">Before you show it</td><td>HTML-encode; auto-escape; Content Security Policy.</td></tr><tr><td class="k">Before you run it</td><td>Never eval; parameterise; sandbox.</td></tr><tr><td class="k">Before you ship it</td><td>Treat as hostile; allowlist formats.</td></tr></tbody></table></div>
+<div><div class="lab">Audit questions</div><ul class="chk"><li>Is every output encoded for where it is displayed?</li><li>Does any output reach a shell, SQL query or interpreter?</li><li>Are structured outputs validated against a schema?</li><li>Is output scanned before reaching downstream systems?</li></ul><div class="lab" style="margin-top:6pt">Framework mapping</div><p class="small">Classic web-security controls apply (output encoding, OWASP ASVS). EU AI Act Article 15 (cybersecurity).</p>
+<div class="panel red"><div class="lab">Practitioner note</div><p style="font-size:8pt">It fell to #10 not because it is harmless but because it is well understood and fixable with ordinary secure coding. It remains common in rushed prototypes.</p></div></div></div></div>
+<div class="foot"><span>Section IV, LLM10 Improper Output Handling</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 20</span></div></section><section class="page"><div class="sectag">Section IV</div><h1 class="t">Ten risks, one attack story</h1><p class="lede">Attacks flow inward from entry to impact. Defence pushes outward, with a control at each ring.</p>
+<div class="body">
+<div class="c3">
+<div class="person"><div class="cap">Ring 1 &middot; Entry vectors</div><h3 style="margin-top:3pt">Where attacks begin</h3><p><b>LLM01</b> Prompt Injection<br><b>LLM04</b> Supply Chain<br><b>LLM05</b> Data &amp; Model Poisoning</p></div>
+<div class="person"><div class="cap">Ring 2 &middot; Amplifiers</div><h3 style="margin-top:3pt">What makes it worse</h3><p><b>LLM08</b> Hidden Context Exposure<br><b>LLM09</b> Vector &amp; Embedding Weaknesses<br><b>LLM03</b> Excessive Agency &middot; <b>LLM10</b> Improper Output Handling</p></div>
+<div class="person" style="border-top-color:var(--red)"><div class="cap" style="color:var(--red)">Ring 3 &middot; Impacts</div><h3 style="margin-top:3pt">The harm</h3><p><b>LLM02</b> Sensitive Info Disclosure<br><b>LLM06</b> Unbounded Consumption<br><b>LLM07</b> Misinformation</p></div></div>
+<div class="panel" style="margin-top:10pt"><div class="lab">The chain in one line</div><p>Injection gets in, loose permissions decide how far it travels, careless output makes it act. These rings are the course&rsquo;s framing, not OWASP&rsquo;s.</p></div>
+<div class="c2"><div><div class="lab">Three things to remember</div><ol class="num">
+<li><b>It is a chain, not ten problems.</b> One incident typically involves several risks at once.</li>
+<li><b>Excessive agency is the multiplier.</b> Every risk worsens the moment the model can act instead of only answer.</li>
+<li><b>The cheapest wins are boring.</b> Classify data before it hits a prompt; encode output before it hits a browser.</li></ol></div>
+<div><div class="lab">Worked example: a hypothetical support agent</div>
+<table><thead><tr><th style="width:55pt">Ring</th><th>What happens</th><th style="width:70pt">Risk</th></tr></thead><tbody>
+<tr><td class="k">Entry</td><td>A customer email hides text telling the assistant to ignore its rules.</td><td>LLM01</td></tr>
+<tr><td class="k">Amplifier</td><td>It reveals its tool names, then calls a refund tool that has no approval step.</td><td>LLM08, LLM03</td></tr>
+<tr><td class="k">Impact</td><td>Funds go to the wrong account; customer data appears in the reply.</td><td>LLM02</td></tr></tbody></table>
+<p class="small">Break any one ring and the story stops: that is defence in depth. <b>The danger is rarely the model being clever. It is the model being trusted.</b></p></div></div></div>
+<div class="foot"><span>Section IV, Ten risks, one attack story</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 21</span></div></section><section class="page"><div class="sectag">Section V</div><h1 class="t">Giving risks official names</h1><p class="lede">Same engineering work, new vocabulary: what auditors, lawyers and customers will ask about.</p>
+<div class="body">
+<table class="plain fw"><thead><tr><th style="width:92pt">Framework</th><th style="width:190pt">What it is</th><th>Key points</th><th style="width:105pt">Use it to</th></tr></thead><tbody>
+<tr><td class="k">MITRE ATLAS</td><td>ATT&amp;CK for AI: adversary <b>tactics</b> (why), <b>techniques</b> (how, with stable IDs) and <b>case studies</b>.</td><td>AML.T0051 prompt injection &rarr; LLM01. AML.T0056 meta prompt extraction &rarr; LLM08. AML.T0010 ML supply chain compromise &rarr; LLM04, LLM05.</td><td>Describe an incident</td></tr>
+<tr><td class="k">EU AI Act</td><td>The first AI law, sorted by risk. In force since August 2024.</td><td>Unacceptable (banned), high-risk (hiring, credit, education, law enforcement), limited (disclose the AI), minimal (most LLM assistants). The course states high-risk duties become mandatory on <b>2 December 2027</b>.</td><td>Know when it is due</td></tr>
+<tr><td class="k">ISO/IEC 42001</td><td>AI management system standard, published December 2023. ISO 27001, but for AI.</td><td>Covers AI risk assessment, data governance, human oversight and ongoing monitoring. Voluntary today, expected tomorrow.</td><td>Prove governance</td></tr>
+<tr><td class="k">NIST AI RMF</td><td>United States framework. Voluntary, no deadlines.</td><td><b>Govern, Map, Measure, Manage</b>: the same four duties the EU Act made mandatory.</td><td>Know how to think</td></tr></tbody></table>
+<div class="c2"><div class="panel"><div class="lab">OWASP versus ATLAS</div><p><b>OWASP = what. ATLAS = how.</b> OWASP organises by category for a security review; ATLAS by attacker behaviour for an incident.</p></div>
+<div class="panel red"><div class="lab">Caution</div><p>Certify against ISO 42001 now and you have built most of the Act&rsquo;s high-risk controls. Not legal advice; verify current dates before you cite them.</p></div></div></div>
+<div class="foot"><span>Section V, Frameworks</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 22</span></div></section><section class="page"><div class="sectag">Section V</div><h1 class="t">You have already been doing this</h1><p class="lede">Five controls you know, with the EU AI Act article that names each one.</p>
+<div class="body">
+<div class="c2"><div>
+<div class="lab">Controls and the Articles that name them</div>
+<table><thead><tr><th>Control you already know</th><th style="width:42pt">Article</th><th style="width:120pt">What the Act calls it</th></tr></thead><tbody>
+<tr><td>Input sanitisation and injection resilience</td><td class="k">Art. 15</td><td>Accuracy, robustness, cybersecurity</td></tr>
+<tr><td>Training-data provenance and quality</td><td class="k">Art. 10</td><td>Data and data governance</td></tr>
+<tr><td>Logging every model and tool action</td><td class="k">Art. 12</td><td>Record-keeping</td></tr>
+<tr><td>Human confirmation before consequence</td><td class="k">Art. 14</td><td>Human oversight</td></tr>
+<tr><td>Threat modelling before a capability ships</td><td class="k">Art. 9</td><td>Risk management system</td></tr></tbody></table>
+<p class="small">Article 10 concerns datasets, not prompts: it is the control behind LLM05, not LLM01.</p>
+<div class="panel"><div class="lab">The skill</div><p>You did not read the regulation; you named the missing controls. You also performed threat modelling without calling it that: you mapped an architecture, ten threats and a control for each.</p></div>
+</div><div>
+<div class="lab r">Challenge: which tier?</div>
+<div class="panel red"><div class="lab">Scenario</div><p>A vendor&rsquo;s LLM screens r&eacute;sum&eacute;s and ranks candidates. It keeps no logs. Nobody reviews the ranking before rejection emails go out.</p></div>
+<div class="lab">The call</div>
+<table><thead><tr><th style="width:62pt">Finding</th><th>Reasoning</th></tr></thead><tbody>
+<tr><td class="k">Risk tier</td><td><b>High-risk.</b> Hiring and worker management is named in Annex III.</td></tr>
+<tr><td class="k">Art. 12</td><td>No record-keeping: the system keeps no logs.</td></tr>
+<tr><td class="k">Art. 14</td><td>No human oversight: rankings drive rejections unreviewed.</td></tr>
+<tr><td class="k">Art. 9</td><td>A risk management system would have caught both gaps.</td></tr></tbody></table></div></div></div>
+<div class="foot"><span>Section V, Controls and EU AI Act articles</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 23</span></div></section><section class="page"><div class="sectag">Section VI</div><h1 class="t">You know where to look now</h1><p class="lede">Keep this page for the next time someone says: &ldquo;Review this AI feature.&rdquo;</p>
+<div class="body">
+<div class="stats" style="grid-template-columns:repeat(3,1fr)"><div><b>8 steps</b><span>Your pipeline map</span></div><div><b>10 risks</b><span>The named failure modes</span></div><div><b>5 questions</b><span>What you ask out loud</span></div></div>
+<div class="c21"><div>
+<div class="lab">The five questions</div>
+<table><thead><tr><th style="width:44pt">Area</th><th>Ask this</th><th style="width:70pt">Risks</th></tr></thead><tbody>
+<tr><td class="k">Data</td><td>Where did the training data come from, and who could write to it?</td><td>LLM04, LLM05</td></tr>
+<tr><td class="k">Model</td><td>Were the weights integrity-verified before deployment?</td><td>LLM04</td></tr>
+<tr><td class="k">Prompt</td><td>Where is the system prompt stored? Has anyone tested it for leaks?</td><td>LLM08</td></tr>
+<tr><td class="k">Input</td><td>Is user input sanitised? Can a user influence the system prompt?</td><td>LLM01</td></tr>
+<tr><td class="k">Output</td><td>Is output validated before it ships anywhere?</td><td>LLM10</td></tr></tbody></table>
+<div class="lab" style="margin-top:4pt">How to run the review</div>
+<ol class="num" style="font-size:8.4pt"><li><b>Draw the pipeline</b> and mark which layers and steps the feature uses.</li>
+<li><b>Label the arrows</b> into the context window with who controls that text.</li>
+<li><b>Ask the five questions</b> and record evidence, not impressions.</li>
+<li><b>Extend</b> to access (02, 03, 06), RAG (09) and trust in output (07), then map gaps to ATLAS and EU AI Act.</li></ol>
+</div><div>
+<div class="lab">Keep in mind</div>
+<ul class="sq"><li><b>Prompt injection is like SQL injection, minus the fix.</b> Contain it; do not expect to patch it.</li>
+<li><b>Regex and WAFs fail</b> against language that can rephrase itself.</li>
+<li><b>Most risks sit outside the AI team:</b> platform, IAM and app owners.</li></ul>
+<div class="panel"><div class="lab">The habit</div><p>Given any AI system, ask where in the pipeline it could break. Then go and check.</p></div></div></div></div>
+<div class="foot"><span>Section VI, The audit toolkit</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 24</span></div></section><section class="page"><div class="sectag">Section VI</div><h1 class="t">Key takeaways and self-check</h1><p class="lede">Ten sentences to carry away, and eight questions to test yourself.</p>
+<div class="body">
+<div class="c12"><div>
+<div class="lab">Ten sentences to carry away</div>
+<ol class="num" style="font-size:8.2pt;line-height:1.34"><li>An LLM is a next-token predictor; rules in prompts are suggestions.</li>
+<li>An LLM application has five layers; the model is only one.</li>
+<li>Every request passes through eight steps; know which an attack targets.</li>
+<li>Step 5, context assembly, is where your application controls what the model sees.</li>
+<li>Remember the Top 10 as four lanes: Input, Data, Access, Output.</li>
+<li>Prompt injection is contained, not fixed.</li>
+<li>Excessive agency is the multiplier.</li>
+<li>Many cheap defences are process and secure coding.</li>
+<li>You are accountable for what your model says and does.</li>
+<li>Frameworks give your existing practice official names.</li></ol>
+</div><div>
+<div class="lab">Self-check</div>
+<table style="font-size:7.8pt"><thead><tr><th style="width:235pt">Question</th><th>Answer</th></tr></thead><tbody>
+<tr><td>Why does a banned-word filter not fully protect an LLM?</td><td>The model reads sub-word tokens (step 1), so text can look clean outside and differ inside.</td></tr>
+<tr><td>At which step does prompt injection live?</td><td>Step 5, context assembly.</td></tr>
+<tr><td>Which risk is the &ldquo;multiplier&rdquo;?</td><td>LLM03 Excessive Agency (#6 to #3).</td></tr>
+<tr><td>Which risk can occur when the model behaves perfectly?</td><td>LLM02 Sensitive Information Disclosure.</td></tr>
+<tr><td>OWASP versus ATLAS?</td><td>OWASP names the risk (what); ATLAS the attacker behaviour (how).</td></tr>
+<tr><td>Which Article covers human oversight?</td><td>Article 14 (logging is 12; risk management is 9).</td></tr>
+<tr><td>Three defences for excessive agency?</td><td>Limit functionality, permissions and autonomy.</td></tr>
+<tr><td>Why is LLM10 &ldquo;not really an AI bug&rdquo;?</td><td>The flaw is in application code that trusts model output.</td></tr></tbody></table></div></div>
+<div class="panel" style="margin-top:2pt"><div class="lab">Acknowledgement and next steps</div>
+<p>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> as a summary of the course taught at AI Security University (AISEC) by <b>Vinaya Vasudevan</b> and <b>Dan Barahona</b>. Keep the audit page as a working reference, take the course quiz, and revisit the section covering any gap. Not legal advice; verify regulatory dates against primary sources.</p></div></div>
+<div class="foot"><span>Section VI, Key takeaways and self-check</span><span>Prepared by <b>Jun&rsquo;dabi (Abdul) Kazembe</b> &nbsp;&middot;&nbsp; 25</span></div></section>
+</body></html>
